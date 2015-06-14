@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>You gotta love frontend conference summary by SimilarWeb</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">You gotta love frontend conference summary</h1>
+      <h2 class="project-tagline"></h2>
+      <a href="https://github.com/SimilarWeb/yglf" class="btn">View on GitHub</a>
+      <a href="https://github.com/SimilarWeb/yglf/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/SimilarWeb/yglf/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p><a href="http://yougottalovefrontend.com/">YGLF</a> conference was a well-organized two-day event, but me and David attended only the second day and here we present what came out of it. 
+The first thing you notice is that the conf was organized by Wix and sponsored by Wix, with lecturers from Wix and prizes from Wix and winners from Wix (finally, got it out of my system!) After a while you relax and concentrate on presentations</p>
+
+<p>[TOC]</p>
+
+<hr>
+
+<h3>
+<a id="the-missing-slice-by-lea-verou" class="anchor" href="#the-missing-slice-by-lea-verou" aria-hidden="true"><span class="octicon octicon-link"></span></a>The missing slice by <a href="http://lea.verou.me/">Lea Verou</a>
+</h3>
+
+<p>It was probably the best talk of the conference. It was a beautifully structured thought process on how a front-ender would tackle the issue of presenting pie charts via CSS. Her presentation was special not only in content - <em>actual code was written live during the talk</em>, but also she used something called <a href="http://lea.verou.me/csss/sample-slideshow.html#intro">CSSS</a> instead of a usual boring powerpoint.</p>
+
+<h5>
+<a id="key-points" class="anchor" href="#key-points" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key points</h5>
+
+<ul>
+<li> Use <em>pure CSS</em> and the code would be roughly (while the slides are still missing)
+<code>.pie {
+    transform:  scaleX(-1); //for flipping
+    rotate(-90deg);
+    skew(50deg); 
+    transform-origin: bottom-left;
+    padding: 50%;
+}</code> , etc....
+However, this solution is hardly flexible (try adding colors or several categories), not extensible and not maintainable</li>
+<li>Why not <em>gradient and pseudo elements</em>?
+<code>.pie {
+border-radius: 50%;
+background: #f06; //fucsia
+linear-gradient (to right, transparent 50%, gold 0);
+color: gold; //or define var. currentColor: gold;
+}</code>
+<code>.pie::before {
+content: '';
+margin-left: 50%;
+height: 100%;
+background: green; //or better background-color: **inherit**
+border-radius: 0 100% 100% 0;
+transform: rotate (15deg); //change this for diff shapes or use 0.1turn ~ 15deg
+}</code>
+You can also do animation with @keyframes for color and spin
+add in <strong>.pie::before</strong>
+<code>animation: 1s spin infinite linear;
+animation: 1s color infinite step-end; //not linear!</code>
+At this point she also showed some crazy stuff with animation using <em>state pause</em> and <em>forwards</em>
+This solution is much better, but still not there yet!</li>
+<li>Next stop is <em>SVG</em>!!!
+First, you define your SVG:
+<code>&lt;svg&gt;
+viewBox="0 0 64 64"
+circle r=25% cx=50% cy=50% stroke
+&lt;/svg&gt;</code>
+The CSS looks slightly less messy:
+<code>.pie {
+}</code>
+<code>.pie circle {
+stroke: gold;
+stroke-width: 32;
+stroke-dash-array: 0 100 100; //this is the thing!!! 64 in SVG and this 100 are connected! (2*32^2*pi)
+fill: none;
+animation: 2s;
+}</code>
+if we need more pie chart sections - we just add more circles with diff colors and dash-array numbers
+This solution is dashing and has all the major advantages - extensibility, flexibility and easy maintenance.</li>
+<li>There's another possibility - use conic gradients. Three lines of code, easy maintenance and really cool.
+However, you can't - it is properly defined by the W3C, but not supported by all the major browsers.
+#####Takeaway
+Having made the journey one understands that attaining the perfect solution takes a lengthy thought process and we were lucky to witness how one of the brightest minds in business does it. But even that is not enough - Lea signed off with a call to action - she believes that we - as developers - are able to influence the web and should steer it toward solutions that we want - like conic gradients. 
+******</li>
+</ul>
+
+<h3>
+<a id="iojs-and-the-future-of-server-side-javascript-by-benjamin-gruenbaum" class="anchor" href="#iojs-and-the-future-of-server-side-javascript-by-benjamin-gruenbaum" aria-hidden="true"><span class="octicon octicon-link"></span></a>io.js and the future of server side JavaScript by Benjamin Gruenbaum</h3>
+
+<p>This lecture was a call to devs to participate in the open source movement and how even small contributions matter:</p>
+
+<ul>
+<li>Opening pull requests</li>
+<li>Writing documentation</li>
+<li>Reporting bugs</li>
+<li>Feature requests</li>
+<li>Answering questions on SO</li>
+</ul>
+
+<h5>
+<a id="takeaway" class="anchor" href="#takeaway" aria-hidden="true"><span class="octicon octicon-link"></span></a>Takeaway</h5>
+
+<ul>
+<li>For those who care - <strong>io.js</strong> and <strong>Node.js</strong> are merging back!</li>
+<li>Have a look at <strong>Bluebird.js</strong> a promise library</li>
+<li>
+<p>You can 'catch-all' unhandled promise rejection by a single line of code in <strong>q.js</strong> and <strong>node.js</strong></p>
+
+<p><code>process.on('unhandledRejection', function(reason, p){
+console.log("Possibly Unhandled Rejection at: Promise ", p, " reason: ", reason);
+// application specific logging here
+});</code></p>
+</li>
+</ul>
+
+<hr>
+
+<h3>
+<a id="nothing-else-matters-easy-backend-for-frontend-developers-by-matthieu-mayran" class="anchor" href="#nothing-else-matters-easy-backend-for-frontend-developers-by-matthieu-mayran" aria-hidden="true"><span class="octicon octicon-link"></span></a>Nothing else matters: Easy backend for frontend developers by Matthieu Mayran</h3>
+
+<p>That's an actual ad break for Google Cloud Fire base - WebSocket-based technology.</p>
+
+<h5>
+<a id="takeaway-1" class="anchor" href="#takeaway-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Takeaway</h5>
+
+<p>If you need something real-time, but lightweight and don't have the time to set up Kafka et al, then contact the <strike>sales</strike> author - <em><a href="mailto:mayran@google.com">mayran@google.com</a></em></p>
+
+<hr>
+
+<h3>
+<a id="react-native-under-the-hood-by-alexander-kotliarskyi" class="anchor" href="#react-native-under-the-hood-by-alexander-kotliarskyi" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="https://speakerdeck.com/frantic/react-native-under-the-hood/">React Native: Under the Hood by Alexander Kotliarskyi</a>
+</h3>
+
+<p>The presenter is a skinny fair haired guy from Facebook who has given a good lecture on deeper plumbing of <a href="https://facebook.github.io/react-native/">React.js Native</a>. React is sexy, but why should we even bother? Native apps have a number of issues</p>
+
+<ul>
+<li>Native apps are hard to build (don't get me started on objective c); </li>
+<li>Code sharing across other platforms with diff technologies - a big NO here</li>
+<li>Slow iteration</li>
+<li>Scalability is hard
+It is obvious that we have almost all these things for granted in web technologies. 
+The selling point in React Native is the principle
+$$
+UI = f^<em>(data)
+$$
+where * no side effects
+React.js works on Virtual DOM and not directly on HTML
+The underlying structure is in the diagram:
+<img src="https://lh3.googleusercontent.com/-76CCka1pZA0/VXvqO56LWEI/AAAAAAAAADY/hx-0i_7adLo/s0/react+native+snippet.JPG" alt="enter image description here" title="react native snippet.JPG">
+*</em>**
+###<a href="http://www.slideshare.net/altryne/coding-your-company-culture">Coding Your Company Culture by Alex Wolkov</a>
+A Senior Web Dude from Fundbox has given some cool tips on how to make your place of work better by investing some time in side projects:</li>
+<li>Use a funny <a href="https://hubot.github.com/">hubot</a> in a company chat (Slack, etc), which easily customizable to become
+
+<ul>
+<li>
+<a href="https://github.com/atmos/hubot-deploy">Chat-ops</a> (deploying via Slack)</li>
+<li>
+<a href="https://github.com/altryne/hubot-insulter">Hubot-insulter</a>
+
+<ul>
+<li>Put a dashboard like <a href="http://dashingdemo.herokuapp.com/sample">this</a>, <a href="http://dashboard.sidlee.com/">this</a> </li>
+<li>Use extensionizr</li>
+<li>Build an onboarding site at your place of work for new employees with all the relevant info
+****
+###<a href="http://slnwww.slideshare.net/orhiltch/binary-data-adventures-in-browser-javascript">Binary Data Adventures in Browser JavaScript by Or Hiltch</a>
+in js all numbers are float64 but all bitwise ops are int32!
+bitwise ops much faster than parseInt()
+asm.js- lib for handling numbers faster
+use transpilers to produce code (emscripten)
+best to install from docker
+webgl inspector for debugging webgl</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<hr>
+
+<h3>
+<a id="landing-your-dream-job-as-a-fed-by-igal-steklov" class="anchor" href="#landing-your-dream-job-as-a-fed-by-igal-steklov" aria-hidden="true"><span class="octicon octicon-link"></span></a>Landing your dream job as a FED by Igal Steklov</h3>
+
+<p>Don't even bother - you are not worthy to work at Wix, let alone sending us a CV. Be a ninja (yes, he showed pics of ninjas) and then maybe for a tiny split second we may slip and consider you as a lowly candidate to change our diapers</p>
+
+<hr>
+
+<h3>
+<a id="boom-performance---the-required-ingredient-for-any-successful-web-product-by-eran-zinman" class="anchor" href="#boom-performance---the-required-ingredient-for-any-successful-web-product-by-eran-zinman" aria-hidden="true"><span class="octicon octicon-link"></span></a><a href="http://www.slideshare.net/zzeran/yglf-2015-boom-performance-eran-zinman-dapulse">BOOM Performance - the required ingredient for any successful web product by Eran Zinman</a>
+</h3>
+
+<p>This is the signing off presentation that was also good. Eran tries to convince us that speed is important (wrong audience here) and how to do it.
+Devs are in charge of speed</p>
+
+<h5>
+<a id="key-points-1" class="anchor" href="#key-points-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key points</h5>
+
+<p>Don't forget the Basics
+*Minify JS + CSS </p>
+
+<ul>
+<li>Gzip compression</li>
+<li>Optimize images (PNG)</li>
+<li>CDN</li>
+<li>Remove render-blocking JS (Move to bottom of HTML)</li>
+</ul>
+
+<p>Don’t shoot yourself in the foot - don't do stupid things with lots of re-rendering (<em>for</em> loops)
+Mind the things that make the DOM Heavy 
+• Use with caution: Round Corners, Box Shadows, Opacity 
+• Beware of binding scroll callback events 
+• Avoid using too many elements (especially in repeatable elements) 
+• GPU Rendering when possible
+Always keep 60fps scroll performance</p>
+
+<p>Use optimistic actions
+Facebook shows comments in the ui before post response returns
+Instagram uploads images in first stage of share flow
+Render first and if there's an error - DO NOTHING or roll back</p>
+
+<p>Prerender, prefetch, preconnect
+80% of user actions are recurrent, Use tracking to know what the users are doing
+Typeahead.js - client lib for autocomplete
+Lunr.js - client Solr/ElasticSearch alternative
+Localstorage is your friend</p>
+
+<p>The fastest request is “no request”</p>
+
+<p><a href="http://blog.teamtreehouse.com/perceived-performance">Perceived performance</a>
+Not everything should be "real", but perceived is enough
+• Gradual UI loading (Facebook effect)
+• Progress bars 
+• Buttons hover + active state + ladda.js 
+• Animations (but don’t animate for more than 100ms)</p>
+
+<h5>
+<a id="the-takeaway" class="anchor" href="#the-takeaway" aria-hidden="true"><span class="octicon octicon-link"></span></a>The takeaway</h5>
+
+<ol>
+<li>Boom Performance = User happiness. </li>
+<li>Don’t skip the basic optimization stuff.</li>
+<li>Unless you must wait for the server – don’t! </li>
+<li>Fetch the data just before the user needs it.</li>
+<li>If you can’t make it – fake it (perceived performance).
+***</li>
+</ol>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/SimilarWeb/yglf">You gotta love frontend conference summary</a> is maintained by <a href="https://github.com/SimilarWeb">SimilarWeb</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
